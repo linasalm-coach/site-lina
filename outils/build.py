@@ -175,6 +175,7 @@ NAV = [("qui-suis-je", "Qui suis-je ?")] + [(s["id"], s["nav"]) for s in SECTION
 sommaire = "".join(
     f'<li><a href="#{i}"><span class="num">{k+1}</span>{label if i != "remise-en-forme" else "Remise en forme<br>Perte/Prise de poids"}</a></li>'
     for k, (i, label) in enumerate(NAV))
+menulinks = "".join(f'<li><a href="#{i}"><span class="num">{k+1}</span>{label}</a></li>' for k, (i, label) in enumerate(NAV)) + '<li><a href="#contact"><span class="num">✉</span>Contact</a></li>'
 navlinks = "".join(f'<a href="#{i}">{label}</a>' for i, label in NAV) + '<a href="#contact">Contact</a>'
 sections = "".join(section_html(k + 2, s) for k, s in enumerate(SECTIONS))
 
@@ -198,7 +199,12 @@ PAGE = f'''<!doctype html>
 <header class="bar">
   <a class="logo" href="#top">coaching<small>Lina Salmi El Idrissi</small></a>
   <nav class="navlinks" aria-label="Sections">{navlinks}</nav>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="burger" aria-hidden="true"></span>Menu</button>
 </header>
+<nav class="menu" id="menu" aria-label="Menu" hidden>
+  <ol>{menulinks}</ol>
+  <a class="menu-ig" href="https://www.instagram.com/toomanyburpees/" target="_blank" rel="noopener">Écris-moi sur Instagram</a>
+</nav>
 
 <main id="top">
 <section class="cover">
@@ -277,6 +283,15 @@ document.querySelectorAll('.tabs').forEach(function (list) {{
     }});
   }});
 }});
+// menu plein écran (mobile)
+var btn = document.querySelector('.menu-btn'), menu = document.getElementById('menu');
+function setMenu(open) {{
+  menu.hidden = !open; btn.setAttribute('aria-expanded', open);
+  document.body.classList.toggle('menu-open', open);
+}}
+btn.addEventListener('click', function () {{ setMenu(menu.hidden); }});
+menu.addEventListener('click', function (ev) {{ if (ev.target.closest('a')) setMenu(false); }});
+document.addEventListener('keydown', function (ev) {{ if (ev.key === 'Escape') setMenu(false); }});
 // section active dans la barre
 var links = {{}};
 document.querySelectorAll('.navlinks a').forEach(function (a) {{ links[a.getAttribute('href').slice(1)] = a; }});
@@ -286,6 +301,7 @@ var io = new IntersectionObserver(function (entries) {{
     Object.values(links).forEach(function (a) {{ a.classList.remove('on'); }});
     var a = links[en.target.id]; if (!a) return;
     a.classList.add('on');
+    menu.querySelectorAll('a').forEach(function (m) {{ m.classList.toggle('on', m.getAttribute('href') === a.getAttribute('href')); }});
     var nav = a.parentNode;
     nav.scrollTo({{left: a.offsetLeft - nav.clientWidth / 2 + a.offsetWidth / 2, behavior: 'smooth'}});
   }});
