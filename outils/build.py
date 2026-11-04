@@ -7,7 +7,7 @@ OUT = Path(sys.argv[1])
 
 BILAN_1 = ("1 Bilan Forme (offert)", "30' Entretien + 30' Tests Physiques")
 BILAN_PT = ("1 Bilan Forme + 1 PT (offerts)", "30' Entretien + 30' Tests Physiques + 1 séance 60' coaching privé")
-REDUC = "*Etudiants et -27 ans : Une réduction de -5% supplémentaire s’applique à toutes les offres."
+REDUC = "<b>Étudiants et -27 ans :</b> une réduction de -5% supplémentaire s’applique à toutes les offres."
 
 def prog_cards(items, prices, monthly):
     return [
@@ -25,7 +25,7 @@ def pt_cards(dur, items, prices):
 
 SECTIONS = [
     dict(
-        id="gymnastique", nav="Prog Gymnastique", big="PROG GYMNASTIQUE",
+        id="gymnastique", nav="Gymnastique", big="GYMNASTIQUE",
         collage=["gym-1", "gym-2", "gym-3", "gym-4"], bw=[2],
         photo="gym", photo_alt="Lina aux anneaux",
         intro=["Débloque ta première traction stricte ou renforce ton endurance sur des high skills comme le Bar Muscle Up : peu importe ton niveau, cette programmation est faite pour améliorer tes compétences gymniques en CrossFit.",
@@ -36,7 +36,7 @@ SECTIONS = [
                           "Educatifs et Skills pour améliorer ta technique"], [80, 228, 432], [76, 72]),
     ),
     dict(
-        id="halterophilie", nav="Prog Haltérophilie", big="PROG HALTEROPHILIE",
+        id="halterophilie", nav="Haltérophilie", big="HALTÉROPHILIE",
         collage=["halte-1", "halte-2", "halte-3", "halte-4"], bw=[],
         photo="halte", photo_alt="Lina devant une barre d'haltérophilie",
         intro=["Ensemble on va améliorer ta technique et te renforcer pour arriver solide sous tes barres pour exploser tes PR ! (et en flexion complète 😉)",
@@ -47,7 +47,7 @@ SECTIONS = [
                           "1 séance / semaine sur le mouvement de Clean&Jerk + Tirage"], [90, 258, 486], [86, 81]),
     ),
     dict(
-        id="hybrid", nav="Prog Hybrid", big="PROG HYBRID",
+        id="hybrid", nav="Hybrid", big="HYBRID",
         collage=["hybrid-1", "hybrid-2", "hybrid-3", "hybrid-4"], bw=[0, 2],
         photo="hybrid", photo_alt="Lina en box jump",
         intro=["Tu kiffes woder avec tes copains mais t’es trop frustré.e de ne pas encore avoir les DU ou pouvoir enchainer tes toes to bar ?<br>Ensemble on va identifier tes lacunes pour les travailler spécifiquement et renforcer tes points forts sous fatigue.",
@@ -58,7 +58,7 @@ SECTIONS = [
         cards=prog_cards(["3 séances/s pour améliorer toutes tes qualités physiques : haltéro, gym, metcon"], [120, 342, 648], [114, 108]),
     ),
     dict(
-        id="hybrid-plus", nav="Prog Hybrid+", title="Prog Hybrid+",
+        id="hybrid-plus", nav="Hybrid+", title="Hybrid+",
         photo="hybrid-plus", photo_alt="Compétition de CrossFit, montée à la corde",
         intro=["Si ton objectif est de performer aux Open ou participer à des compétitions de CrossFit, on peut travailler ensemble de manière plus avancée avec une programmation 360° et jouer sur tous les curseurs de ton fitness pour devenir une vraie machine de guerre. 🚀",
                "Une programmation compétition est à destination de profils entraînés : il faut être capable d’encaisser le volume d’entraînement sans se blesser - cette prog. peut s’adapter à des athlètes souhaitant garder quelques WOD programmés dans leur box, si la prog peut être communiquée en amont."],
@@ -68,7 +68,7 @@ SECTIONS = [
         cards=prog_cards(["5 séances/s pour améliorer toutes tes qualités physiques : haltéro, gym, metcon"], [140, 399, 756], [133, 126]),
     ),
     dict(
-        id="personal-training", nav="Personal Training", title_outline="PERSONAL TRAINING",
+        id="personal-training", nav="Personal Training", title_outline="PERSONAL TRAINING", teaser=1,
         photo="personal-training", photo_alt="Lina écrit au tableau de la box",
         intro=["Si tu veux aller plus loin lors de tes entraînements, le personal training (coaching privé) te permettra d’avoir un accompagnement personnalisé et plus avancé soit pour t’aider à débloquer un mouvement soit pour compléter le suivi d’une programmation spécifique avec des corrections immédiates, des éducatifs qu’on travaillera ensemble et un petit coup de motivation pour t’emmener en dehors de ta zone de confort.",
                "Je te propose donc qu’on se retrouve en physique pour une séance de 1H ou 1h30 en fonction des mouvements que tu souhaites travailler. 🏋🏽‍♂️"],
@@ -102,21 +102,23 @@ SECTIONS = [
 def e(s):  # texte déjà rédigé à la main, on laisse passer <br> et entités
     return s
 
-def card_html(c):
+def card_html(c, best=False):
     stamp = f'<span class="stamp">{c["stamp"]}</span>' if c.get("stamp") else ""
-    lis = ""
+    flag = '<p class="flag">Meilleur prix</p>' if best else ""
+    bilan = ""
     if c.get("bilan"):
-        lis += f'<li class="bilan">{c["bilan"][0]}<small>{c["bilan"][1]}</small></li>'
-    lis += "".join(f"<li>{i}</li>" for i in c["items"])
-    note = f'<p class="note">{c["note"]}</p>' if c.get("note") else '<p class="note">&nbsp;</p>'
-    return f'''<div class="card-wrap">{stamp}<article class="card">
-        <h4>{c["title"]}</h4>
-        <ul>{lis}</ul>
-        <p class="price">{c["price"]} €</p>
-      </article>{note}</div>'''
+        bilan = f'<p class="gift"><b>{c["bilan"][0]}</b><small>{c["bilan"][1]}</small></p>'
+    lis = "".join(f"<li>{i}</li>" for i in c["items"])
+    note = f'<p class="note">{c["note"]}</p>' if c.get("note") else ""
+    return f'''<div class="card-wrap{" best" if best else ""}">{stamp}<article class="card">
+        {flag}<h4>{c["title"]}</h4>
+        <p class="price">{c["price"]}<span>€</span></p>{note}
+        {bilan}<ul>{lis}</ul>
+        <a class="card-cta" href="https://www.instagram.com/toomanyburpees/" target="_blank" rel="noopener">Réserver sur Instagram</a>
+      </article></div>'''
 
 def cards_html(cards):
-    return '<div class="cards">' + "".join(card_html(c) for c in cards) + '</div>'
+    return '<p class="swipe">Glisse pour voir les autres formules →</p><div class="cards">' + "".join(card_html(c, k == len(cards) - 1) for k, c in enumerate(cards)) + '</div>'
 
 def collage_html(s):
     imgs = ""
@@ -153,9 +155,12 @@ def section_html(n, s):
         h = f'<h2>{s.get("title", s["nav"])}</h2>'
     facts = "".join(f"<li><b>{k} :</b> {v}</li>" for k, v in s["facts"])
     facts = f'<ul class="facts">{facts}</ul>' if facts else ""
-    intro = "".join(f"<p>{p}</p>" for p in s["intro"])
+    t = s.get("teaser", 0)
+    teaser = f'<p>{s["intro"][t]}</p>'
+    rest = "".join(f"<p>{p}</p>" for k, p in enumerate(s["intro"]) if k != t)
+    more = f'<details class="more"><summary>En savoir plus</summary><div class="lead">{rest}</div>{facts}</details>'
     out += f'''<div class="presta-head">
-      <div class="presta-text">{h}<div class="lead">{intro}</div>{facts}</div>
+      <div class="presta-text">{h}<div class="lead">{teaser}</div>{more}</div>
       <figure class="presta-photo"><img src="img/{s["photo"]}.jpg" alt="{s["photo_alt"]}" loading="lazy"></figure>
     </div>'''
     if s.get("cards"):
@@ -172,11 +177,7 @@ def section_html(n, s):
 
 NAV = [("qui-suis-je", "Qui suis-je ?")] + [(s["id"], s["nav"]) for s in SECTIONS]
 
-sommaire = "".join(
-    f'<li><a href="#{i}"><span class="num">{k+1}</span>{label if i != "remise-en-forme" else "Remise en forme<br>Perte/Prise de poids"}</a></li>'
-    for k, (i, label) in enumerate(NAV))
-menulinks = "".join(f'<li><a href="#{i}"><span class="num">{k+1}</span>{label}</a></li>' for k, (i, label) in enumerate(NAV)) + '<li><a href="#contact"><span class="num">✉</span>Contact</a></li>'
-navlinks = "".join(f'<a href="#{i}">{label}</a>' for i, label in NAV) + '<a href="#contact">Contact</a>'
+navlinks = "".join(f'<a href="#{i}">{label}</a>' for i, label in NAV) + '<a class="cta" href="#contact">Contact</a>'
 sections = "".join(section_html(k + 2, s) for k, s in enumerate(SECTIONS))
 
 PAGE = f'''<!doctype html>
@@ -199,12 +200,8 @@ PAGE = f'''<!doctype html>
 <header class="bar">
   <a class="logo" href="#top">coaching<small>Lina Salmi El Idrissi</small></a>
   <nav class="navlinks" aria-label="Sections">{navlinks}</nav>
-  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="burger" aria-hidden="true"></span>Menu</button>
 </header>
-<nav class="menu" id="menu" aria-label="Menu" hidden>
-  <ol>{menulinks}</ol>
-  <a class="menu-ig" href="https://www.instagram.com/toomanyburpees/" target="_blank" rel="noopener">Écris-moi sur Instagram</a>
-</nav>
+
 
 <main id="top">
 <section class="cover">
@@ -224,9 +221,11 @@ PAGE = f'''<!doctype html>
       <h2>Qui suis-je ?</h2>
       <blockquote class="lead">
         <p>“Je n’ai jamais vraiment été sportive. J’ai découvert le CrossFit à 25 ans et ça a radicalement changé ma vie.<br>J’ai commencé les compétitions très tôt, notamment en équipe et j’ai décidé de me spécialiser pendant une pleine saison en haltérophilie.</p>
+      </blockquote>
+      <details class="more"><summary>Lire la suite</summary><blockquote class="lead">
         <p>De là, j’ai acquis énormément de connaissances dans la discipline, ce qui me permet de suivre spécifiquement des athlètes qui souhaiteraient peaufiner leur technique et exploiter leur plein potentiel en CrossFit.</p>
         <p>Quand je coache, mon seul but, c’est d’égayer la journée des gens et leur prouver qu’ils sont capables d’accomplir de grandes choses. Mon accompagnement va au delà d’une simple séance pour se défouler : <b>mon objectif c’est que vous soyez fiers de vous.</b> ❤️ ”</p>
-      </blockquote>
+      </blockquote></details>
       <ul class="facts plain">
         <li><b>Diplôme :</b> BPJEPS AF Mention Haltérophilie &amp; Musculation</li>
         <li><b>Pratique Sportive :</b> CrossFit (+20 compétitions) ;<br>Haltérophilie (Niveau IRG -69) - Streetlifting (débutante)</li>
@@ -236,10 +235,7 @@ PAGE = f'''<!doctype html>
   </div>
 </section>
 
-<section class="sommaire" aria-labelledby="sommaire-t">
-  <h2 id="sommaire-t" class="vertical">Sommaire</h2>
-  <ol>{sommaire}</ol>
-</section>
+
 
 {sections}
 
@@ -283,15 +279,6 @@ document.querySelectorAll('.tabs').forEach(function (list) {{
     }});
   }});
 }});
-// menu plein écran (mobile)
-var btn = document.querySelector('.menu-btn'), menu = document.getElementById('menu');
-function setMenu(open) {{
-  menu.hidden = !open; btn.setAttribute('aria-expanded', open);
-  document.body.classList.toggle('menu-open', open);
-}}
-btn.addEventListener('click', function () {{ setMenu(menu.hidden); }});
-menu.addEventListener('click', function (ev) {{ if (ev.target.closest('a')) setMenu(false); }});
-document.addEventListener('keydown', function (ev) {{ if (ev.key === 'Escape') setMenu(false); }});
 // section active dans la barre
 var links = {{}};
 document.querySelectorAll('.navlinks a').forEach(function (a) {{ links[a.getAttribute('href').slice(1)] = a; }});
@@ -301,7 +288,6 @@ var io = new IntersectionObserver(function (entries) {{
     Object.values(links).forEach(function (a) {{ a.classList.remove('on'); }});
     var a = links[en.target.id]; if (!a) return;
     a.classList.add('on');
-    menu.querySelectorAll('a').forEach(function (m) {{ m.classList.toggle('on', m.getAttribute('href') === a.getAttribute('href')); }});
     var nav = a.parentNode;
     nav.scrollTo({{left: a.offsetLeft - nav.clientWidth / 2 + a.offsetWidth / 2, behavior: 'smooth'}});
   }});
