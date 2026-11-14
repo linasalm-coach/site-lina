@@ -9,6 +9,9 @@ BILAN_1 = ("1 Bilan Forme (offert)", "30' Entretien + 30' Tests Physiques")
 BILAN_PT = ("1 Bilan Forme + 1 PT (offerts)", "30' Entretien + 30' Tests Physiques + 1 séance 60' coaching privé")
 REDUC = "<b>Étudiants et -27 ans :</b> une réduction de -5% supplémentaire s’applique à toutes les offres."
 
+# Mettre True pour réafficher les prix sur le site
+SHOW_PRICES = False
+
 def prog_cards(items, prices, monthly):
     return [
         dict(title="1 mois", bilan=BILAN_1, items=items, price=prices[0]),
@@ -104,17 +107,19 @@ def e(s):  # texte déjà rédigé à la main, on laisse passer <br> et entités
 
 def card_html(c, best=False):
     stamp = f'<span class="stamp">{c["stamp"]}</span>' if c.get("stamp") else ""
-    flag = '<p class="flag">Meilleur prix</p>' if best else ""
+    flag = '<p class="flag">Meilleur prix</p>' if best and SHOW_PRICES else ""
     bilan = ""
     if c.get("bilan"):
         bilan = f'<p class="gift"><b>{c["bilan"][0]}</b><small>{c["bilan"][1]}</small></p>'
     lis = "".join(f"<li>{i}</li>" for i in c["items"])
-    note = f'<p class="note">{c["note"]}</p>' if c.get("note") else ""
+    note = f'<p class="note">{c["note"]}</p>' if c.get("note") and SHOW_PRICES else ""
+    price = f'<p class="price">{c["price"]}<span>€</span></p>' if SHOW_PRICES else ""
+    cta = "Réserver sur Instagram" if SHOW_PRICES else "Demander le tarif"
     return f'''<div class="card-wrap{" best" if best else ""}">{stamp}<article class="card">
         {flag}<h4>{c["title"]}</h4>
-        <p class="price">{c["price"]}<span>€</span></p>{note}
+        {price}{note}
         {bilan}<ul>{lis}</ul>
-        <a class="card-cta" href="https://www.instagram.com/toomanyburpees/" target="_blank" rel="noopener">Réserver sur Instagram</a>
+        <a class="card-cta" href="https://www.instagram.com/toomanyburpees/" target="_blank" rel="noopener">{cta}</a>
       </article></div>'''
 
 def cards_html(cards):
