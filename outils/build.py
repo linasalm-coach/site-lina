@@ -152,8 +152,6 @@ SUIVI = '''<div class="suivi">
 
 def section_html(n, s):
     out = f'<section class="presta" id="{s["id"]}" data-num="{n}">'
-    if s.get("collage"):
-        out += collage_html(s)
     if s.get("title_outline"):
         h = f'<h2 class="outline">{s["title_outline"]}</h2>'
     else:

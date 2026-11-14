@@ -221,9 +221,7 @@ main > section.contact {
   .collage-title { -webkit-text-stroke-width: 1.5px; text-shadow: 2px 2px 0 var(--noir); }
 
   .presta-head { grid-template-columns: 1fr; padding: 32px 16px 0; gap: 22px; }
-  .presta-photo { order: -1; }
-  .presta-photo img { aspect-ratio: 4 / 5; max-height: 70vh; }
-  #remise-en-forme .presta-photo, #halterophilie .presta-photo, #gymnastique .presta-photo, #hybrid .presta-photo { display: none; } /* le collage suffit sur mobile */
+  .presta-photo img { aspect-ratio: 4 / 3; max-height: 50vh; }
   .presta h2 { font-size: 34px; }
   .presta h2.outline { font-size: 40px; }
 
@@ -350,3 +348,7 @@ blockquote.lead { margin: 0; }
 }
 .card { position: relative; }
 .flag { position: absolute; left: -1.5px; top: -29px; margin: 0; padding: 5px 12px; font-size: 14px; }
+
+/* sections : le texte arrive en premier, aligné en haut */
+.presta-head { align-items: start; padding-top: 36px; }
+.presta-text { padding-top: 8px; }
