@@ -352,3 +352,16 @@ blockquote.lead { margin: 0; }
 /* sections : le texte arrive en premier, aligné en haut */
 .presta-head { align-items: start; padding-top: 36px; }
 .presta-text { padding-top: 8px; }
+
+/* photos affichées en entier, sans recadrage */
+.presta-photo, .cover-photo { display: flex; justify-content: center; align-items: flex-start; }
+.presta-photo img, .cover-photo img {
+  width: auto; height: auto; max-width: 100%; max-height: 82vh;
+  aspect-ratio: auto; object-fit: contain;
+}
+.cover-photo { align-items: center; padding: 24px 24px 24px 0; }
+@media (max-width: 720px) {
+  .presta-photo img { max-height: 75vh; }
+  .cover-photo { padding: 0 16px 24px; }
+  .cover-photo img { height: auto; max-height: 75vh; }
+}
